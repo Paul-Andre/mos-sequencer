@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <vector>
 #include "Tuning.h"
 #include "Note.h"
@@ -11,7 +12,6 @@ using namespace std;
 #define MUS_PATH ""
 
 void audio_callback(void *userdata, Uint8 *stream, int len);
-void event_loop(void);
 
 static Uint8 *audio_pos;
 static Uint32 audio_len;
@@ -27,6 +27,8 @@ int main(int argc, char **argv) {
 	vector<Note> notes;
 
 
+	SDL_AudioSpec want, have;
+	SDL_AudioDeviceID dev;
 	bool quit = false;
 	SDL_Event e;
 
@@ -38,30 +40,38 @@ int main(int argc, char **argv) {
 						 0);
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 
-	static Uint32 wav_length;
-	static Uint8 *wav_buffer;
-	static SDL_AudioSpec wav_spec;
+	want.callback = audio_callback;
+	want.freq = 48000;
+	want.format = AUDIO_F32;
+	want.channels = 2;
+	want.samples = 1024;
 
-	if( SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length) == NULL )
-		return 1;
-
-	wav_spec.callback = audio_callback;
-	wav_spec.userdata = NULL;
-
-	audio_pos = wav_buffer;
-	audio_len = wav_length;
-
-	if( SDL_OpenAudio(&wav_spec, NULL) < 0 ){
+	if( dev = SDL_OpenAudioDevice(NULL,
+				            0,
+							&want,
+							&have,
+							SDL_AUDIO_ALLOW_FORMAT_CHANGE) < 0 ){
 		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
 		exit(-1);
 	}
 
-	SDL_PauseAudio(0);
+	SDL_PauseAudioDevice(dev, 0);
+	printf("doing audio stuff\n");
+	SDL_Delay(5000);
+	printf("stopped audio stuff\n");
 
-	while( audio_len > 0 )
-		SDL_Delay(100);
+	//----------------------Event loop-------------------------------
+	while(!quit) {
+		while(SDL_PollEvent(&e)){
+			if(e.type == SDL_KEYDOWN) {
+				exit(-1);
+			}
+		}
+	}
 
-	SDL_CloseAudio();
+	
+
+	SDL_CloseAudioDevice(dev);
 	// SDL_FreeWav(wav_buffer);
 
 	//drawScale(tuning, renderer);
@@ -81,9 +91,12 @@ void draw(SDL_Renderer* renderer) {
 }
 
 void audio_callback(void *userdata, Uint8 *stream, int len){
+	float *out = (float*) stream;
+	srand(time(NULL));
 
+
+	for(int i=0; i<len/2; i++){
+		out[i] = i/len;
+	}
 }
 
-void event_loop(){
-
-}
