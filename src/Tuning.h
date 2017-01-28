@@ -4,4 +4,4 @@ struct Tuning {
 	double gen1Size;
 	double gen2Size;
 	int notesPerScale;
-}
+};

@@ -25,10 +25,10 @@ int main(int argc, char **argv) {
 	static Uint8 *wav_buffer;
 	static SDL_AudioSpec wav_spec;
 
-	if( SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_length) == NULL )
+	if( SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length) == NULL )
 		return 1;
 
-	wav_spec.callback = my_audio_callback;
+	wav_spec.callback = audio_callback;
 	wav_spec.userdata = NULL;
 
 	audio_pos = wav_buffer;
@@ -45,7 +45,7 @@ int main(int argc, char **argv) {
 		SDL_Delay(100);
 
 	SDL_CloseAudio();
-	SDL_FreeWav(wav_buffer);
+	// SDL_FreeWav(wav_buffer);
 
 	//drawScale(tuning, renderer);
 
