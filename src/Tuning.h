@@ -9,5 +9,5 @@ struct Tuning {
 	int noteNumber;
 };
 
-vector<double> generateMosScale(Tuning const &Tuning);
+vector<double> generateMosScale(Tuning const &tuning);
 
