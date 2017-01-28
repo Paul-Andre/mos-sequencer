@@ -3,4 +3,4 @@ struct Note {
 	double duration;
 	int gen1;
 	int gen2;
-}
+};
