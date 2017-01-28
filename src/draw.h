@@ -1,9 +1,12 @@
+#ifdef DRAW_H
+#define DRAW_H
+
 #include "Tuning.h"
 #include "PianoRollPosition.h"
+#include "Note.h"
 #include <vector>
-#include <SDL2.0/SDL.h>
+#include <SDL2/SDL.h>
 
-/* Function that draws notes to the screen
- * in function of the PianoRollPosition and Tuning
- */
-void draw(PianoRollPosition, Tuning, SDL_Renderer*);
+void draw(PianoRollPosition const &position, Tuning const &tuning, vector<Note> notes, SDL_Renderer *renderer);
+
+#endif

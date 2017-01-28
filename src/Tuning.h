@@ -8,9 +8,10 @@ using namespace std;
 struct Tuning {
 	double gen1Size;
 	double gen2Size;
-	int noteNumber;
+	vector<double> scale;
+	double chroma;
 };
 
-vector<double> generateMosScale(Tuning const &tuning);
+Tuning generateMosScale(double gen1Size, double gen2Size, int noteNumber);
 
 #endif
