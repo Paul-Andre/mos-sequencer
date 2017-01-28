@@ -11,6 +11,7 @@ using namespace std;
 #define MUS_PATH ""
 
 void audio_callback(void *userdata, Uint8 *stream, int len);
+void event_loop(void);
 
 static Uint8 *audio_pos;
 static Uint32 audio_len;
