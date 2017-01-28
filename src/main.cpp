@@ -36,6 +36,7 @@ int main(int argc, char **argv) {
 						 SDL_WINDOWPOS_UNDEFINED,
 						 640, 480,
 						 0);
+
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_RenderPresent(renderer);
 
@@ -48,11 +49,11 @@ int main(int argc, char **argv) {
 	want.userdata = &phase;
 
 	printf("sdfasd\n");
-	if( dev = SDL_OpenAudioDevice(NULL,
+	if( (dev = SDL_OpenAudioDevice(NULL,
 				            0,
 							&want,
 							&have,
-							SDL_AUDIO_ALLOW_FORMAT_CHANGE) < 0 ){
+							SDL_AUDIO_ALLOW_FORMAT_CHANGE)) <= 0 ){
 
 		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
 		exit(-1);
@@ -85,6 +86,7 @@ int main(int argc, char **argv) {
 
 	
 
+	printf("quitting\n");
 	SDL_CloseAudioDevice(dev);
 
 }
