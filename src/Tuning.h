@@ -1,3 +1,5 @@
+#ifndef TUNING_H
+#define TUNING_H
 #include <vector>
 using namespace std;
 
@@ -9,5 +11,6 @@ struct Tuning {
 	int noteNumber;
 };
 
-vector<double> generateMosScale(Tuning const &Tuning);
+vector<double> generateMosScale(Tuning const &tuning);
 
+#endif
