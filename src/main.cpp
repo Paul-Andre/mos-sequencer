@@ -17,6 +17,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len);
 
 static Uint8 *audio_pos;
 static Uint32 audio_len;
+double phase;
 
 int main(int argc, char **argv) {
 	PianoRollPosition postion;
@@ -38,14 +39,15 @@ int main(int argc, char **argv) {
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 	SDL_RenderPresent(renderer);
 
-	double phase = 0;
+	SDL_zero(want);
 	want.callback = audio_callback;
-	want.freq = 48000;
+	want.freq = 44100;
 	want.format = AUDIO_F32SYS;
 	want.channels = 2;
 	want.samples = 1024;
 	want.userdata = &phase;
 
+	printf("sdfasd\n");
 	if( dev = SDL_OpenAudioDevice(NULL,
 				            0,
 							&want,
@@ -89,7 +91,7 @@ int main(int argc, char **argv) {
 
 void audio_callback(void *userdata, Uint8 *stream, int len){
 	float *out = (float*) stream;
-	printf("wewe");
+	printf("wewe\n");
 
 	for(int i=0; i<len/sizeof(float); i++){
 		*((double*) userdata) += 440. /44100.;
