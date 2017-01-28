@@ -62,16 +62,18 @@ int main(int argc, char **argv) {
 
 	//----------------------Event loop-------------------------------
 	while(!quit) {
+		int i=0;
 		if(SDL_WaitEventTimeout(&e, 50)){
 			if(e.type == SDL_QUIT)
 				quit = true;
 			if(e.type == SDL_KEYDOWN) {
 				SDL_Rect rect;
 
-				rect.x = 0;
-				rect.y = 0;
+				rect.x = i*10;
+				rect.y = i*10;
 				rect.w = 32;
 				rect.h = 32;
+				i++;
 
 				SDL_RenderDrawRect(renderer, &rect);
 				SDL_RenderPresent(renderer);
