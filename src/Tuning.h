@@ -7,7 +7,7 @@ struct Tuning {
 	double gen1Size;
 	double gen2Size;
 	int noteNumber;
-}
+};
 
 vector<double> generateMosScale(Tuning const &Tuning);
 
