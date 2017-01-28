@@ -9,4 +9,4 @@
 
 void draw(PianoRollPosition const &position, Tuning const &tuning, vector<Note> notes, SDL_Renderer *renderer);
 
-#endif DRAW_H
+#endif

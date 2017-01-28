@@ -10,6 +10,12 @@ void draw(PianoRollPosition const &position,
 		vector<Note> notes,
 		SDL_Renderer *renderer)
 {
+	int screenWidth;
+	int screenHeight;
+	
+	SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
+	//SDL_SetRendererDrawColor(renderer, 30, 30, 30, 255);
+	SDL_RenderClear(renderer);
 }
 
 

@@ -1,9 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <vector>
 #include "Tuning.h"
 #include "Note.h"
+#include "waveforms.h"
 #include "PianoRollPosition.h"
+//#include "draw.h"
 #include <math.h>
 using namespace std;
 
@@ -11,7 +14,6 @@ using namespace std;
 #define MUS_PATH ""
 
 void audio_callback(void *userdata, Uint8 *stream, int len);
-void event_loop(void);
 
 static Uint8 *audio_pos;
 static Uint32 audio_len;
@@ -21,6 +23,9 @@ int main(int argc, char **argv) {
 	Tuning tuning = generateMosScale( 1., log2(7./12.), 7);
 	vector<Note> notes;
 
+
+	SDL_AudioSpec want, have;
+	SDL_AudioDeviceID dev;
 	bool quit = false;
 	SDL_Event e;
 
@@ -32,52 +37,53 @@ int main(int argc, char **argv) {
 						 0);
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 
-	static Uint32 wav_length;
-	static Uint8 *wav_buffer;
-	static SDL_AudioSpec wav_spec;
+	double phase = 0;
+	want.callback = audio_callback;
+	want.freq = 48000;
+	want.format = AUDIO_F32SYS;
+	want.channels = 2;
+	want.samples = 1024;
+	want.userdata = &phase;
 
-	if( SDL_LoadWAV(MUS_PATH, &wav_spec, &wav_buffer, &wav_length) == NULL )
-		return 1;
+	if( dev = SDL_OpenAudioDevice(NULL,
+				            0,
+							&want,
+							&have,
+							SDL_AUDIO_ALLOW_FORMAT_CHANGE) < 0 ){
 
-	wav_spec.callback = audio_callback;
-	wav_spec.userdata = NULL;
-
-	audio_pos = wav_buffer;
-	audio_len = wav_length;
-
-	if( SDL_OpenAudio(&wav_spec, NULL) < 0 ){
 		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
 		exit(-1);
 	}
 
-	SDL_PauseAudio(0);
+	srand(time(NULL));
+	//SDL_PauseAudioDevice(dev, 0);
 
-	while( audio_len > 0 )
-		SDL_Delay(100);
+	//----------------------Event loop-------------------------------
+	while(!quit) {
+		while(SDL_PollEvent(&e)){
 
-	SDL_CloseAudio();
-	// SDL_FreeWav(wav_buffer);
+			if(e.type == SDL_KEYDOWN) {
+				quit == 1;
 
-	//drawScale(tuning, renderer);
+			}
+		}
+		//draw(postion, tuning, notes, renderer);
+	}
 
+	
+
+	SDL_CloseAudioDevice(dev);
 
 	printf("Hello world.\n");
 }
 
-void draw(SDL_Renderer* renderer) {
-	int screenWidth;
-	int screenHeight;
-	
-	SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
-	//SDL_SetRendererDrawColor(renderer, 30, 30, 30, 255);
-	SDL_RenderClear(renderer);
-	
-}
-
 void audio_callback(void *userdata, Uint8 *stream, int len){
+	float *out = (float*) stream;
+	printf("wewe");
 
+	for(int i=0; i<len/sizeof(float); i++){
+		*((double*) userdata) += 440. /44100.;
+		out[i] = triangleFunction( *((double*) userdata));
+	}
 }
 
-void event_loop(){
-
-}
