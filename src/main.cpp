@@ -24,7 +24,6 @@ int main(int argc, char **argv) {
 	Tuning tuning = generateMosScale( 1., log2(7./12.), 7);
 	vector<Note> notes;
 
-
 	SDL_AudioSpec want, have;
 	SDL_AudioDeviceID dev;
 	bool quit = false;
@@ -97,6 +96,7 @@ void audio_callback(void *userdata, Uint8 *stream, int len){
 
 	for(int i=0; i<len/sizeof(float); i++){
 		*((double*) userdata) += 440. /44100.;
+
 		out[i] = triangleFunction( *((double*) userdata));
 	}
 }
