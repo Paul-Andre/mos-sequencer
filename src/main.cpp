@@ -47,7 +47,6 @@ int main(int argc, char **argv) {
 	want.samples = 1024;
 	want.userdata = &phase;
 
-	printf("sdfasd\n");
 	if( dev = SDL_OpenAudioDevice(NULL,
 				            0,
 							&want,
