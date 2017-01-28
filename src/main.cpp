@@ -1,9 +1,25 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <vector>
+#include "Tuning.h"
+#include "Note.h"
+#include "PianoRollPosition.h"
+#include <math.h>
+using namespace std;
 
 #include <SDL2/SDL.h>
 
 int main(int argc, char **argv) {
+	PianoRollPosition postion;
+	Tuning tuning = {
+		1.,
+		log2(7./12.),
+		7,
+	};
+	vector<double> scale = generateMosScale(tuning);
+	vector<Note> notes;
+
+
 	bool quit = false;
 	SDL_Event e;
 	
