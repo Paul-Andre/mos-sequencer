@@ -39,6 +39,7 @@ int main(int argc, char **argv) {
 						 640, 480,
 						 0);
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
+	SDL_RenderPresent(renderer);
 
 	want.callback = audio_callback;
 	want.freq = 48000;
@@ -56,15 +57,25 @@ int main(int argc, char **argv) {
 	}
 
 	SDL_PauseAudioDevice(dev, 0);
-	printf("doing audio stuff\n");
-	SDL_Delay(5000);
-	printf("stopped audio stuff\n");
 
 	//----------------------Event loop-------------------------------
 	while(!quit) {
-		while(SDL_PollEvent(&e)){
+		if(SDL_WaitEventTimeout(&e, 50)){
+			if(e.type == SDL_QUIT)
+				quit = true;
 			if(e.type == SDL_KEYDOWN) {
-				exit(-1);
+				SDL_Rect rect;
+
+				rect.x = 0;
+				rect.y = 0;
+				rect.w = 32;
+				rect.h = 32;
+
+				SDL_RenderDrawRect(renderer, &rect);
+				SDL_RenderPresent(renderer);
+			}
+			if(e.type == SDL_MOUSEWHEEL) {
+				// do something
 			}
 		}
 	}
@@ -77,7 +88,6 @@ int main(int argc, char **argv) {
 	//drawScale(tuning, renderer);
 
 
-	printf("Hello world.\n");
 }
 
 void draw(SDL_Renderer* renderer) {
