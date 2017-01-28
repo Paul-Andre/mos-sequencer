@@ -1,2 +1,3 @@
 /obj/
-/play
+/sequencer
+Makefile.dep
