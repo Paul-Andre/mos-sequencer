@@ -1,6 +1,12 @@
 #include "ScalePitch.h"
 #include "Tuning.h"
 
-double getPitch(ScalePitch const &scalePitch, Tuning const &tuning) {
-	return note.gen1*tuning.gen1Size + note.gen2*tuning.gen2Size;
+double getPitch(ScalePitch const &note, Tuning const &tuning) {
+	int octave = note.scaleDegree / tuning.scale.size();
+	int offset = note.scaleDegree % tuning.scale.size();
+	if (note.scaleDegree < 0) {
+		octave --;
+		offset += tuning.scale.size();
+	}
+	return octave*tuning.gen1Size + tuning.scale[offset];
 }

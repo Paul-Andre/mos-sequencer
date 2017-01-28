@@ -1,17 +1,13 @@
 #ifndef NOTE_H
 #define NOTE_H
 #include "Tuning.h"
+#include "ScalePitch.h"
 
 struct Note {
 	double start;
 	double duration;
-	int gen1;
-	int gen2;
+	ScalePitch scalePitch;
 };
-
-double getPitch(Note const &note, Tuning const &tuning) {
-	return note.gen1*tuning.gen1Size + note.gen2*tuning.gen2Size;
-}
 
 #endif
 

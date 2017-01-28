@@ -3,11 +3,12 @@
 #include "Tuning.h"
 
 struct ScalePitch {
-	int gen1;
-	int gen2;
+	int scaleDegree;
+	int accidentals;
 };
 
 double getPitch(ScalePitch const &scalePitch, Tuning const &tuning);
 
 #endif
+
 

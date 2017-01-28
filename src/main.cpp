@@ -18,14 +18,8 @@ static Uint32 audio_len;
 
 int main(int argc, char **argv) {
 	PianoRollPosition postion;
-	Tuning tuning = {
-		1.,
-		log2(7./12.),
-		7,
-	};
-	vector<double> scale = generateMosScale(tuning);
+	Tuning tuning = generateMosScale( 1., log2(7./12.), 7);
 	vector<Note> notes;
-
 
 	bool quit = false;
 	SDL_Event e;
