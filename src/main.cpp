@@ -21,6 +21,21 @@ static Uint8 *audio_pos;
 static Uint32 audio_len;
 double phase;
 
+int closestPitch(vector<ScalePitch> const &pitches,Tuning const &tuning,  double mouse_pitch) {
+	double best = -1;
+	double diff = 10000000000.;
+	for(int i=0; i<pitches.size(); i++){
+		double rawPitch = getPitch(pitches[i], tuning);
+
+		double newDiff = fabs(mouse_pitch - rawPitch);
+		if( newDiff < 0.05 && newDiff < diff) {
+			best = i;
+			diff = newDiff;
+		}
+	}
+	return best;
+}
+
 int main(int argc, char **argv) {
 	int k=0;
 	PianoRollPosition position;
@@ -103,18 +118,20 @@ int main(int argc, char **argv) {
 
 
 
+	int selectedNote = -1;
+	bool draggingTop = false;
 
 
 	// Event loop
 	while(!quit) {
 		if(SDL_WaitEventTimeout(&e, 50)){
-			if(e.type == SDL_QUIT)
+			if(e.type == SDL_QUIT) {
 				quit = true;
+			}
+
             const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
 			if(e.type == SDL_KEYDOWN  && !currentKeyStates[SDL_SCANCODE_LCTRL]) {
-
-
 
 
 				if (e.key.keysym.scancode == SDL_SCANCODE_RETURN) {
@@ -148,21 +165,11 @@ int main(int argc, char **argv) {
                 {
                 	position.x -= 0.1;
                 }
-
-				
-
-			
-				
-
-                
-
-
 			}
 
 
 			if(e.type == SDL_MOUSEWHEEL) {
 				SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
-
 
 				int screenWidth;
 				int screenHeight;
@@ -197,7 +204,6 @@ int main(int argc, char **argv) {
 				double pY = position.y - ((double)mouse_position_y / screenHeight) * position.h;
 				double d_left = (pX - position.x) * dX;
 				double d_up = (position.y - pY) * dY;
-				printf("pY: %f d_up: %f \n", pY, d_up );
 				position.w *= dX;
 				position.x = pX - d_left;
 				position.h *= dY;
@@ -206,42 +212,60 @@ int main(int argc, char **argv) {
 
 			if(e.type == SDL_MOUSEBUTTONDOWN) {
 				SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
-				ScalePitch closest_pitch;
 				int screenWidth;
 				int screenHeight;
 
 				SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
+				double mouseTime = position.x + (mouse_position_x / (double)screenWidth) * position.w;
+				double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
 
-				if(e.button == SDL_BUTTON_LEFT) {
-					double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
+
+
+
+				if(e.button.button == SDL_BUTTON_LEFT) {
 
 					vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
-					double rawPitch, diff = (double)screenHeight;
-					ScalePitch best;
 
-					for(int i=0; i<pitches.size(); i++){
-						//					printf("Pitch: %d, %d\n", pitches[i].scaleDegree, pitches[i].accidentals);
-						rawPitch = getPitch(pitches[i], tuning);
-						//					printf("Raw pitch: %f\n", rawPitch);
-
-						if(fabs(mouse_pitch - rawPitch) < diff) {
-							best = pitches[i];
-							diff = fabs(mouse_pitch - rawPitch);
-						}
+					int closest = closestPitch(pitches, tuning, mouse_pitch);
+					if (closest!=-1) {
+						notes.push_back({mouseTime, 0.5, pitches[closest] });
 					}
-
-					printf("mouse is at %f\n", mouse_pitch);
-					//	printf("Closest is %f\n", best);
-					double start = position.x + (mouse_position_x / (double)screenWidth) * position.w;
-
-					notes.push_back({start,0.5, best });
 				}
-				if(e.button == SDL_BUTTON_RIGHT) {
+				else if(e.button.button == SDL_BUTTON_RIGHT) {
+
+
+
+				}
+				else if(e.button.button == SDL_BUTTON_MIDDLE) {
+
 
 				}
 
 			}
+			else if(e.type == SDL_MOUSEMOTION) {
+				if (selectedNote!=-1) {
+					SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
+					int screenWidth;
+					int screenHeight;
 
+					SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
+					double mouseTime = position.x + (mouse_position_x / (double)screenWidth) * position.w;
+					double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
+					if (!draggingTop) {
+						vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
+
+						int closest = closestPitch(pitches, tuning, mouse_pitch);
+						if (closest!=-1) {
+							notes[selectedNote].scalePitch.scaleDegree = pitches[closest].scaleDegree;
+						}
+					}
+				}
+			}
+			else if(e.type == SDL_MOUSEBUTTONUP) {
+				if (selectedNote!=-1) {
+					selectedNote = -1;
+				}
+			}
 
 		}
 		draw(position, tuning, notes, renderer);
