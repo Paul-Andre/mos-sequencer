@@ -238,12 +238,18 @@ int main(int argc, char **argv) {
 
 
 				if(e.button.button == SDL_BUTTON_LEFT) {
+					int c = closestNote(notes, tuning, mouseTime, mouse_pitch);
+					if (c!=-1) {
+						selectedNote = c;
+					}
+					else {
 
-					vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
+						vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
 
-					int closest = closestPitch(pitches, tuning, mouse_pitch);
-					if (closest!=-1) {
-						notes.push_back({mouseTime, 0.5, pitches[closest] });
+						int closest = closestPitch(pitches, tuning, mouse_pitch);
+						if (closest!=-1) {
+							notes.push_back({mouseTime, 0.5, pitches[closest] });
+						}
 					}
 				}
 				else if(e.button.button == SDL_BUTTON_MIDDLE) {
