@@ -141,31 +141,64 @@ int main(int argc, char **argv) {
 			SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
 
 
+			int screenWidth;
+			int screenHeight;
 
-			double zoom_factor = 1.0000001;
+			SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
+
+
+			double zoom_factor = 1.0000050;
 			double dX = window_size_x * (1 - 1 / zoom_factor);
-			double dY = window_size_y *(1 - 1/zoom_factor);
-			double pX = (mouse_position_x - position.x) / position.w;
-			double pY = (mouse_position_y - position.y) / position.h;
+			double dY = window_size_y * (1 - 1 / zoom_factor);
+			double pX = (mouse_position_x / screenWidth) * position.w + position.x;
+			double pY = position.y - (mouse_position_y / screenHeight) * position.h;
 			double d_left = pX * dX;
 			double d_up = pY * dY;
 
 
-			if(e.type == SDL_MOUSEWHEEL && currentKeyStates[SDL_SCANCODE_LCTRL]) {
-				printf("%d\n x1x1x1x1x1", dX );
-				printf("%d\n x2x2x2x2x2", d_left );
-				position.w += dX*e.wheel.y;
-				position.x += d_left*e.wheel.y;
-			}
-			else if (e.type == SDL_MOUSEWHEEL && !currentKeyStates[SDL_SCANCODE_LCTRL]){
-				printf("%d\n y1y1y1y1y1", dY );
-				printf("%d\n y2y2y2y2y2", d_up );
-				position.h += d_up*e.wheel.y;
-				position.y += dY*e.wheel.y;
+			if(e.type == SDL_MOUSEWHEEL) {
+				SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
 
-			
-			}
 
+				int screenWidth;
+				int screenHeight;
+
+				SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
+
+
+				double zoom_factor = 1.050;
+				double dX;
+				double dY;
+				double zoom_power;
+				if (e.wheel.y==1) {
+					zoom_power = zoom_factor;
+				}
+				else if (e.wheel.y== -1) {
+					zoom_power = 1/zoom_factor;
+				}
+				else {
+					zoom_power = 1;
+				}
+
+				if  ( currentKeyStates[SDL_SCANCODE_LCTRL] ) {
+					dX = zoom_power;
+					dY = 1;
+				}
+				else {
+					dX = 1;
+					dY = zoom_power;
+				}
+
+				double pX = ((double)mouse_position_x / screenWidth) * position.w + position.x;
+				double pY = position.y - ((double)mouse_position_y / screenHeight) * position.h;
+				double d_left = (pX - position.x) * dX;
+				double d_up = (position.y - pY) * dY;
+				printf("pY: %f d_up: %f \n", pY, d_up );
+				position.w *= dX;
+				position.x = pX - d_left;
+				position.h *= dY;
+				position.y = pY + d_up;
+			}
 
 
 		}
