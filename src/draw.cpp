@@ -28,7 +28,18 @@ void draw(PianoRollPosition const &position,
 	const int scaleLinesNum = octaveLinesNum*sc_size; //Might want to change this
 	double octaveSize = screenHeight/position.h;        //Careful!
 
-//	printf("[DEBUG] offset is: %f\n", offset);
+	double beatStart = floor(position.x*4);
+	double beatEnd = ceil(position.x+position.w*4);
+
+	vector<SDL_Rect> beatZones;
+	for(int i = beatStart; i<beatEnd; i+=2){
+
+		beatZones.push_back({
+
+
+
+
+
 
 	SDL_Rect scaleLines[scaleLinesNum];
 	SDL_Rect octaveLines[octaveLinesNum];
@@ -64,16 +75,22 @@ void draw(PianoRollPosition const &position,
 	}
 
 
-	SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
-	if(SDL_RenderFillRects(renderer, scaleLines, octaveLinesNum*sc_size) != 0)
-		printf("Error in draw when rendering scaleLines\n");
-	SDL_SetRenderDrawColor(renderer, 210, 210, 210, 255);
-	if(SDL_RenderFillRects(renderer, octaveLines, octaveLinesNum) != 0)
-		printf("Error in draw when rendering octaveLines\n");
-	SDL_SetRenderDrawColor(renderer, 210, 10, 10, 255);
+	if (octaveLinesNum*sc_size>0) {
+		SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+		if(SDL_RenderFillRects(renderer, scaleLines, octaveLinesNum*sc_size) != 0)
+			printf("Error in draw when rendering scaleLines\n");
+	}
+
+	if (octaveLinesNum>0) {
+		SDL_SetRenderDrawColor(renderer, 210, 210, 210, 255);
+		if(SDL_RenderFillRects(renderer, octaveLines, octaveLinesNum) != 0)
+			printf("Error in draw when rendering octaveLines\n");
+	}
+
 	if (onScreenNotes.size()>0) {
-	if(SDL_RenderFillRects(renderer, &onScreenNotes[0], onScreenNotes.size()) != 0)
-		printf("Error in draw when rendering onScreenNotes\n");
+		SDL_SetRenderDrawColor(renderer, 210, 10, 10, 255);
+		if(SDL_RenderFillRects(renderer, &onScreenNotes[0], onScreenNotes.size()) != 0)
+			printf("Error in draw when rendering onScreenNotes\n");
 	}
 
 
