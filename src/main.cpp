@@ -26,6 +26,7 @@ int main(int argc, char **argv) {
 	PianoRollPosition position;
 	Tuning tuning = generateMosScale( 1., 7./12., 7);
 	vector<Note> notes;
+	notes.push_back({0,0.5, (ScalePitch) {0,0}});
 	SDL_AudioSpec want, have;
 	SDL_AudioDeviceID dev;
 	bool quit = false;
@@ -37,7 +38,7 @@ int main(int argc, char **argv) {
 			             SDL_WINDOWPOS_UNDEFINED,
 						 SDL_WINDOWPOS_UNDEFINED,
 						 640, 480,
-						 0);
+						 SDL_WINDOW_RESIZABLE);
 
 	for(int i=0; i<tuning.scale.size(); i++)
 		printf("Debug scale %d: %f\n", i, tuning.scale[i]*12);
@@ -118,9 +119,6 @@ void audio_callback(void *data_, Uint8 *stream, int len){
 	float *out = (float*) stream;
 	PlaybackStructure *data = (PlaybackStructure*) data_;
 
-	for(int i=0; i<len/sizeof(float); i++){
-
-		out[i] = 0;
-	}
+	playAudio(*data, out, len/2/sizeof(float));
 }
 
