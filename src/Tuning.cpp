@@ -17,9 +17,10 @@ double getChroma(vector<double> scale) {
 Tuning generateMosScale(double gen1Size, double gen2Size, int noteNumber){
 	double base = 0;
 	double interval = fmod(gen2Size, gen1Size);
+	printf("Debug %f\n", interval);
 	std::vector<double> output(noteNumber);
 	for (int i = 0; i< noteNumber; i++){
-		output.push_back(fmod(base + (i*interval), gen1Size));
+		output[i] = fmod(base + (i*interval), gen1Size);
 	}
 	std::sort (output.begin(), output.end());
 
