@@ -212,28 +212,33 @@ int main(int argc, char **argv) {
 
 				SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
 
-				double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
+				if(e.button == SDL_BUTTON_LEFT) {
+					double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
 
-				vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
-				double rawPitch, diff = (double)screenHeight;
-				ScalePitch best;
+					vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
+					double rawPitch, diff = (double)screenHeight;
+					ScalePitch best;
 
-				for(int i=0; i<pitches.size(); i++){
-//					printf("Pitch: %d, %d\n", pitches[i].scaleDegree, pitches[i].accidentals);
-					rawPitch = getPitch(pitches[i], tuning);
-//					printf("Raw pitch: %f\n", rawPitch);
-					
-					if(fabs(mouse_pitch - rawPitch) < diff) {
-						best = pitches[i];
-						diff = fabs(mouse_pitch - rawPitch);
+					for(int i=0; i<pitches.size(); i++){
+						//					printf("Pitch: %d, %d\n", pitches[i].scaleDegree, pitches[i].accidentals);
+						rawPitch = getPitch(pitches[i], tuning);
+						//					printf("Raw pitch: %f\n", rawPitch);
+
+						if(fabs(mouse_pitch - rawPitch) < diff) {
+							best = pitches[i];
+							diff = fabs(mouse_pitch - rawPitch);
+						}
 					}
+
+					printf("mouse is at %f\n", mouse_pitch);
+					//	printf("Closest is %f\n", best);
+					double start = position.x + (mouse_position_x / (double)screenWidth) * position.w;
+
+					notes.push_back({start,0.5, best });
 				}
+				if(e.button == SDL_BUTTON_RIGHT) {
 
-				printf("mouse is at %f\n", mouse_pitch);
-			//	printf("Closest is %f\n", best);
-				double start = position.x + (mouse_position_x / (double)screenWidth) * position.w;
-
-				notes.push_back({start,0.5, best });
+				}
 
 			}
 
