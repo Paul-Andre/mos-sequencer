@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 	int beat = 44100;
 
 	vector<NoteEvent> events = makeEventStream(notes, beat, tuning);
-	userdata.events = &events;
+	userdata.events = events;
 	userdata.state = On;
 
 	SDL_zero(want);
@@ -117,7 +117,22 @@ int main(int argc, char **argv) {
 
 
 
-				if( currentKeyStates[ SDL_SCANCODE_UP ] )
+				if (e.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+
+					int beat = 44100;
+					vector<NoteEvent> events = makeEventStream(notes, beat, tuning);
+					userdata.state = On;
+
+					SDL_LockAudioDevice(dev);
+					resetPlaybackStructure(userdata);
+					userdata.events = events;
+
+					SDL_UnlockAudioDevice(dev);
+				}
+
+
+
+				else if( currentKeyStates[ SDL_SCANCODE_UP ] )
                 {
                 	position.y -= 0.1;
                 }
@@ -133,6 +148,11 @@ int main(int argc, char **argv) {
                 {
                 	position.x -= 0.1;
                 }
+
+				
+
+			
+				
 
                 
 

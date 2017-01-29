@@ -32,8 +32,8 @@ int findNextOffNote(PlayingNote const *notes, int lastOnNote) {
 void playAudio(PlaybackStructure &data, float* stream, int len) {
 	for (int t=0; t<len; t++) {
 		if (data.state == On) {
-			while (data.passedFrames >= ((*(data.events))[data.eventPtr]).timeStamp ) {
-				NoteEvent *event = &(*(data.events))[data.eventPtr];
+			while (data.passedFrames >= (((data.events))[data.eventPtr]).timeStamp ) {
+				NoteEvent *event = &((data.events))[data.eventPtr];
 				if (event->on) {
 					int nextOffNote = findNextOffNote(data.notes,data.lastOnNote);
 					data.lastOnNote = nextOffNote;
@@ -56,7 +56,7 @@ void playAudio(PlaybackStructure &data, float* stream, int len) {
 				}
 
 				data.eventPtr++;
-				if (data.eventPtr>=data.events->size()){
+				if (data.eventPtr>=data.events.size()){
 					data.state = Decaying;
 				}
 			}
