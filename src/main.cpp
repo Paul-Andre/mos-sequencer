@@ -26,7 +26,7 @@ int main(int argc, char **argv) {
 	PianoRollPosition position;
 	Tuning tuning = generateMosScale( 1., 7./12., 7);
 	vector<Note> notes;
-	notes.push_back({0,0.5, (ScalePitch) {0,0}});
+	notes.push_back({0,0.5, (ScalePitch) {1,-1}});
 	SDL_AudioSpec want, have;
 	SDL_AudioDeviceID dev;
 	bool quit = false;
@@ -40,8 +40,10 @@ int main(int argc, char **argv) {
 						 640, 480,
 						 SDL_WINDOW_RESIZABLE);
 
-	for(int i=0; i<tuning.scale.size(); i++)
+	for(int i=0; i<tuning.scale.size(); i++) {
 		printf("Debug scale %d: %f\n", i, tuning.scale[i]*12);
+	}
+	printf("Chroma: %f\n", tuning.chroma*12);
 
 	// Display default window
 	position.x = 0;
