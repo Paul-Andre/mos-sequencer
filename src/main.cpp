@@ -9,11 +9,11 @@
 #include "Note.h"
 #include "waveforms.h"
 #include "PianoRollPosition.h"
+#include "PlaybackStructure.h"
 #include "draw.h"
 
 using namespace std;
 
-#define MUS_PATH ""
 
 void audio_callback(void *userdata, Uint8 *stream, int len);
 
@@ -24,7 +24,7 @@ double phase;
 int main(int argc, char **argv) {
 	int k=0;
 	PianoRollPosition position;
-	Tuning tuning = generateMosScale( 1., log2(7./12.), 7);
+	Tuning tuning = generateMosScale( 1., 7./12., 7);
 	vector<Note> notes;
 	SDL_AudioSpec want, have;
 	SDL_AudioDeviceID dev;
@@ -40,7 +40,7 @@ int main(int argc, char **argv) {
 						 0);
 
 	for(int i=0; i<tuning.scale.size(); i++)
-		printf("Debug scale %d: %f\n", i, tuning.scale[i]);
+		printf("Debug scale %d: %f\n", i, tuning.scale[i]*12);
 
 	// Display default window
 	position.x = 0;
@@ -51,14 +51,15 @@ int main(int argc, char **argv) {
 	SDL_Renderer *renderer = SDL_CreateRenderer(window, -1, 0);
 	draw(position, tuning, notes, renderer);
 
-    // Setting up audio
+	PlaybackStructure userdata;
+
 	SDL_zero(want);
 	want.callback = audio_callback;
 	want.freq = 44100;
 	want.format = AUDIO_F32SYS;
 	want.channels = 2;
 	want.samples = 1024;
-	want.userdata = &phase;
+	want.userdata = &userdata;
 
 	if( (dev = SDL_OpenAudioDevice(NULL,
 				            0,
@@ -104,13 +105,13 @@ int main(int argc, char **argv) {
 
 }
 
-void audio_callback(void *userdata, Uint8 *stream, int len){
+void audio_callback(void *data_, Uint8 *stream, int len){
 	float *out = (float*) stream;
+	PlaybackStructure *data = (PlaybackStructure*) data_;
 
 	for(int i=0; i<len/sizeof(float); i++){
-		*((double*) userdata) += 440. /44100.;
 
-		out[i] = triangleFunction( *((double*) userdata));
+		out[i] = 0;
 	}
 }
 

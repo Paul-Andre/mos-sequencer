@@ -3,9 +3,8 @@
 #include "PianoRollPosition.h"
 #include "Note.h"
 #include <vector>
+#include <math.h>
 #include <SDL2/SDL.h>
-
-#define OFFSET 30
 
 void draw(PianoRollPosition const &position,
 		Tuning const &tuning,
@@ -18,7 +17,6 @@ void draw(PianoRollPosition const &position,
 	SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
 	//SDL_SetRendererDrawColor(renderer, 30, 30, 30, 255);
 	SDL_RenderClear(renderer);
-	SDL_RenderPresent(renderer);
 	
 
     double offset = (position.h - (int) position.h)*screenHeight; 
@@ -51,9 +49,6 @@ void draw(PianoRollPosition const &position,
 	SDL_RenderFillRects(renderer, scaleLines, scaleLinesNum);
 	SDL_SetRenderDrawColor(renderer, 210, 210, 210, 255);
 	SDL_RenderFillRects(renderer, octaveLines, octaveLinesNum);
-
-
-
 
 	SDL_RenderPresent(renderer);
 	return;
