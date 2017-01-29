@@ -79,18 +79,18 @@ int main(int argc, char **argv) {
 	want.samples = 1024;
 	want.userdata = &userdata;
 
-	/*if( (dev = SDL_OpenAudioDevice(NULL,
+	if( (dev = SDL_OpenAudioDevice(NULL,
 				            0,
 							&want,
 							&have,
 							SDL_AUDIO_ALLOW_FORMAT_CHANGE)) <= 0 ){
 
 		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
-		exit(-1);
-	}*/
-
-	// Unpausing audio
-	SDL_PauseAudioDevice(dev, 0);
+	}
+	else {
+		// Unpausing audio
+		SDL_PauseAudioDevice(dev, 0);
+	}
 
 
 	//relative mouse positions
