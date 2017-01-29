@@ -44,7 +44,7 @@ vector<ScalePitch> pitchesInWindow(Tuning const &tuning, double y, double h){
 	vector<ScalePitch> pitches;
 
 	for(int i=lowerOctave; i<higherOctave; i++) {
-		for(int j=0; j<tuning.scale.size()-1; j++) {
+		for(int j=0; j<tuning.scale.size(); j++) {
 			pitches.push_back ( {i*tuning.scale.size()+j, 0});
 		}
 	}

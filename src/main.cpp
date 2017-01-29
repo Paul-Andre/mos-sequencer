@@ -215,25 +215,25 @@ int main(int argc, char **argv) {
 				double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
 
 				vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
-				double rawPitch, diff = (double)screenHeight, best;
+				double rawPitch, diff = (double)screenHeight;
+				ScalePitch best;
 
 				for(int i=0; i<pitches.size(); i++){
-					printf("Pitch: %d, %d\n", pitches[i].scaleDegree, pitches[i].accidentals);
+//					printf("Pitch: %d, %d\n", pitches[i].scaleDegree, pitches[i].accidentals);
 					rawPitch = getPitch(pitches[i], tuning);
-					printf("Raw pitch: %f\n", rawPitch);
-					if(abs(mouse_pitch - rawPitch) < diff) {
-						best = rawPitch;
-						diff = abs(mouse_pitch - rawPitch);
+//					printf("Raw pitch: %f\n", rawPitch);
+					
+					if(fabs(mouse_pitch - rawPitch) < diff) {
+						best = pitches[i];
+						diff = fabs(mouse_pitch - rawPitch);
 					}
 				}
 
-				printf("Closest is %f\n", best);
+				printf("mouse is at %f\n", mouse_pitch);
+			//	printf("Closest is %f\n", best);
+				double start = position.x + (mouse_position_x / (double)screenWidth) * position.w;
 
-				
-
-				
-
-
+				notes.push_back({start,0.5, best });
 
 			}
 
