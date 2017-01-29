@@ -258,8 +258,10 @@ int main(int argc, char **argv) {
 					
 					int c = closestNote(notes, tuning, x, y);
 
-					printf("c: %d\n", c);
-					printf("closest is {%f, %f, {%d, %d}}\n", notes[c].start, notes[c].duration, notes[c].scalePitch.scaleDegree, notes[c].scalePitch.accidentals);
+				//	printf("c: %d\n", c);
+				//	printf("closest is {%f, %f, {%d, %d}}\n", notes[c].start, notes[c].duration, notes[c].scalePitch.scaleDegree, notes[c].scalePitch.accidentals);
+					notes[c] = notes[notes.size()-1];
+					notes.pop_back();
 				}
 
 			}
