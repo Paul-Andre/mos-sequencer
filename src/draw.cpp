@@ -2,6 +2,7 @@
 #include "Tuning.h"
 #include "PianoRollPosition.h"
 #include "Note.h"
+#include "ScalePitch.h"
 #include <vector>
 #include <math.h>
 #include <SDL2/SDL.h>
@@ -48,12 +49,33 @@ void draw(PianoRollPosition const &position,
 		}
 	}
 
+
+	vector<SDL_Rect> onScreenNotes;
+	for (int i=0; i<notes.size(); i++) {
+		Note const &note = notes[i];
+		double pitch = getPitch(note.scalePitch, tuning);
+		SDL_Rect r;
+		double x = (note.start - position.x)*(double)screenWidth/position.w;
+		double w = (note.duration)*(double)screenWidth/position.w;
+		double y = (position.y-pitch)*(double)screenHeight/position.h;
+		double h = 0.01*screenHeight/position.h;
+		r.x = x; r.y = y; r.w = w; r.h = h;
+		onScreenNotes.push_back(r);
+	}
+
+
 	SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
 	if(SDL_RenderFillRects(renderer, scaleLines, octaveLinesNum*sc_size) != 0)
 		printf("Error in draw when rendering scaleLines\n");
 	SDL_SetRenderDrawColor(renderer, 210, 210, 210, 255);
 	if(SDL_RenderFillRects(renderer, octaveLines, octaveLinesNum) != 0)
 		printf("Error in draw when rendering octaveLines\n");
+	SDL_SetRenderDrawColor(renderer, 210, 10, 10, 255);
+	if (onScreenNotes.size()>0) {
+	if(SDL_RenderFillRects(renderer, &onScreenNotes[0], onScreenNotes.size()) != 0)
+		printf("Error in draw when rendering onScreenNotes\n");
+	}
+
 
 	SDL_RenderPresent(renderer);
 	return;
