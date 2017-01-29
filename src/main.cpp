@@ -138,22 +138,6 @@ int main(int argc, char **argv) {
 
 
 			}
-			SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
-
-
-			int screenWidth;
-			int screenHeight;
-
-			SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
-
-
-			double zoom_factor = 1.0000050;
-			double dX = window_size_x * (1 - 1 / zoom_factor);
-			double dY = window_size_y * (1 - 1 / zoom_factor);
-			double pX = (mouse_position_x / screenWidth) * position.w + position.x;
-			double pY = position.y - (mouse_position_y / screenHeight) * position.h;
-			double d_left = pX * dX;
-			double d_up = pY * dY;
 
 
 			if(e.type == SDL_MOUSEWHEEL) {
@@ -198,6 +182,39 @@ int main(int argc, char **argv) {
 				position.x = pX - d_left;
 				position.h *= dY;
 				position.y = pY + d_up;
+			}
+
+			if(e.type == SDL_MOUSEBUTTONDOWN) {
+				SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
+				ScalePitch closest_pitch;
+				int screenWidth;
+				int screenHeight;
+
+				SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
+
+				double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
+
+				vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
+				double rawPitch, diff = (double)screenHeight, best;
+
+				for(int i=0; i<pitches.size(); i++){
+					printf("Pitch: %d, %d\n", pitches[i].scaleDegree, pitches[i].accidentals);
+					rawPitch = getPitch(pitches[i], tuning);
+					printf("Raw pitch: %f\n", rawPitch);
+					if(abs(mouse_pitch - rawPitch) < diff) {
+						best = rawPitch;
+						diff = abs(mouse_pitch - rawPitch);
+					}
+				}
+
+				printf("Closest is %f\n", best);
+
+				
+
+				
+
+
+
 			}
 
 
