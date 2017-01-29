@@ -97,20 +97,45 @@ int main(int argc, char **argv) {
 		if(SDL_WaitEventTimeout(&e, 50)){
 			if(e.type == SDL_QUIT)
 				quit = true;
-			if(e.type == SDL_KEYDOWN) {
-				SDL_Rect rect;
+            const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
-				rect.x = k*10;
-				rect.y = k*10;
-				rect.w = 32;
-				rect.h = 32;
-				k++;
+			if(e.type == SDL_KEYDOWN  && !currentKeyStates[SDL_SCANCODE_LCTRL]) {
 
-				SDL_RenderDrawRect(renderer, &rect);
-				SDL_RenderPresent(renderer);
+
+
+
+				if( currentKeyStates[ SDL_SCANCODE_UP ] )
+                {
+                	position.y -= 0.1;
+                }
+                else if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+                {
+                	position.y += 0.1;
+                }
+                else if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
+                {
+                	position.x += 0.1;
+                }
+                else if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
+                {
+                	position.x -= 0.1;
+                }
+
+                
+
+
 			}
 
-            const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
+			/*double mouse_zoom_rectangle_size_x = ;
+			double mouse_zoom_rectangle_size_y = ;
+			double zoomfactor = 0.5;
+			SDL_GetRendererOutputSize(renderer, mouse_zoom_rectangle_size_x, mouse_zoom_rectangle_size_y);
+			double dX = mouse_zoom_rectangle_size_x* (1 - 1 / zoomfactor);
+			double dY = ouse_zoom_rectangle_size_y* (1 - 1 / zoomfactor);
+			double relative_position_x = mouse_zoom_rectangle_size_x/2 ; 
+			double relative_position_y = -mouse_zoom_rectangle_size_y/2;
+			double mouse_position_x;
+			double mouse_position_y;
 
 			if(e.type == SDL_MOUSEWHEEL && currentKeyStates[SDL_SCANCODE_LCTRL]) {
 				position.w += (0.5*e.wheel.y);
@@ -118,7 +143,8 @@ int main(int argc, char **argv) {
 			else if (e.type == SDL_MOUSEWHEEL && !currentKeyStates[SDL_SCANCODE_LCTRL]){
 				position.h += (0.5*e.wheel.y);
 
-			}
+			}*/
+
 
 		}
 		draw(position, tuning, notes, renderer);
