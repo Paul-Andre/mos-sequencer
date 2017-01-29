@@ -80,20 +80,29 @@ int main(int argc, char **argv) {
 		if(SDL_WaitEventTimeout(&e, 50)){
 			if(e.type == SDL_QUIT)
 				quit = true;
-			if(e.type == SDL_KEYDOWN) {
-				SDL_Rect rect;
+            const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
-				rect.x = k*10;
-				rect.y = k*10;
-				rect.w = 32;
-				rect.h = 32;
-				k++;
+			if(e.type == SDL_KEYDOWN  && !currentKeyStates[SDL_SCANCODE_LCTRL]) {
+				if( currentKeyStates[ SDL_SCANCODE_UP ] )
+                {
+                	position.y -= 0.2;
+                }
+                else if( currentKeyStates[ SDL_SCANCODE_DOWN ] )
+                {
+                	position.y += 0.2;
+                }
+                else if( currentKeyStates[ SDL_SCANCODE_LEFT ] )
+                {
+                	position.x += 0.2;
+                }
+                else if( currentKeyStates[ SDL_SCANCODE_RIGHT ] )
+                {
+                	position.x -= 0.2;
+                }
 
-				SDL_RenderDrawRect(renderer, &rect);
-				SDL_RenderPresent(renderer);
+
 			}
 
-            const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
 			if(e.type == SDL_MOUSEWHEEL && currentKeyStates[SDL_SCANCODE_LCTRL]) {
 				position.w += (0.5*e.wheel.y);
@@ -102,6 +111,7 @@ int main(int argc, char **argv) {
 				position.h += (0.5*e.wheel.y);
 
 			}
+
 
 		}
 		draw(position, tuning, notes, renderer);
