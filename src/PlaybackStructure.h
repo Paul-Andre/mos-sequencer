@@ -2,6 +2,9 @@
 #define PLAYBACK_STRUCTURE_H
 
 #include <vector>
+#include "Note.h"
+#include "Tuning.h"
+
 #define PLAYBACK_STRUCTURE_NOTE_NUMBER 16
 
 enum NoteState {
@@ -39,6 +42,9 @@ struct PlaybackStructure {
 };
 
 void resetPlaybackStructure(PlaybackStructure &data);
+
 void playAudio(PlaybackStructure &data, float* stream, int len);
+
+vector<NoteEvent> makeEventStream(vector<Note> const &notes, int beat, Tuning const &tuning);
 
 #endif

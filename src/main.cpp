@@ -26,22 +26,31 @@ int main(int argc, char **argv) {
 	PianoRollPosition position;
 	Tuning tuning = generateMosScale( 1., 7./12., 7);
 	vector<Note> notes;
+	notes.push_back({0,0.5, (ScalePitch) {1,-1}});
+	notes.push_back({0.5,0.5, (ScalePitch) {2,-1}});
+	notes.push_back({1,0.5, (ScalePitch) {1,-1}});
+	notes.push_back({1.5,0.5, (ScalePitch) {2,-1}});
+	notes.push_back({1,0.5, (ScalePitch) {3,0}});
+	notes.push_back({1.5,0.5, (ScalePitch) {3,1}});
+
 	SDL_AudioSpec want, have;
 	notes.push_back({0,0.5, (ScalePitch) {0,0}});
 
 	SDL_AudioDeviceID dev;
 	bool quit = false;
 	SDL_Event e;
+
+	
+
 	// Init SDL
 	SDL_Init(SDL_INIT_EVERYTHING);
 	SDL_Window *window = SDL_CreateWindow("Sequencer",
 			             SDL_WINDOWPOS_UNDEFINED,
 						 SDL_WINDOWPOS_UNDEFINED,
 						 640, 480,
-						 0);
+						 SDL_WINDOW_RESIZABLE);
 
-	for(int i=0; i<tuning.scale.size(); i++)
-		printf("Debug scale %d: %f\n", i, tuning.scale[i]*12);
+
 
 	// Display default window
 	position.x = 0;
@@ -53,6 +62,14 @@ int main(int argc, char **argv) {
 	draw(position, tuning, notes, renderer);
 
 	PlaybackStructure userdata;
+
+	resetPlaybackStructure(userdata);
+
+	int beat = 44100;
+
+	vector<NoteEvent> events = makeEventStream(notes, beat, tuning);
+	userdata.events = &events;
+	userdata.state = On;
 
 	SDL_zero(want);
 	want.callback = audio_callback;
@@ -73,7 +90,7 @@ int main(int argc, char **argv) {
 	}*/
 
 	// Unpausing audio
-	//SDL_PauseAudioDevice(dev, 0);
+	SDL_PauseAudioDevice(dev, 0);
 
 	// Event loop
 	while(!quit) {
@@ -129,9 +146,8 @@ void audio_callback(void *data_, Uint8 *stream, int len){
 	float *out = (float*) stream;
 	PlaybackStructure *data = (PlaybackStructure*) data_;
 
-	for(int i=0; i<len/sizeof(float); i++){
+	playAudio(*data, out, len/2/sizeof(float));
 
-		out[i] = 0;
-	}
+
 }
 

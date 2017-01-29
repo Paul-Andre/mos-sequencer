@@ -8,5 +8,5 @@ double getPitch(ScalePitch const &note, Tuning const &tuning) {
 		octave --;
 		offset += tuning.scale.size();
 	}
-	return octave*tuning.gen1Size + tuning.scale[offset];
+	return octave*tuning.gen1Size + tuning.scale[offset] + note.accidentals*tuning.chroma;
 }
