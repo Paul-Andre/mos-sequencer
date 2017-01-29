@@ -109,9 +109,6 @@ void audio_callback(void *data_, Uint8 *stream, int len){
 	float *out = (float*) stream;
 	PlaybackStructure *data = (PlaybackStructure*) data_;
 
-	for(int i=0; i<len/sizeof(float); i++){
-
-		out[i] = 0;
-	}
+	playAudio(*data, out, len/2/sizeof(float));
 }
 
