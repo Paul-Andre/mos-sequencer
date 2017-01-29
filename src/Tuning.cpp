@@ -2,6 +2,7 @@
 #include <vector>      
 #include "Tuning.h"
 #include <math.h>
+#include <stdio.h>
 
 double getChroma(vector<double> scale) {
 	double min = scale[0];
@@ -15,12 +16,15 @@ double getChroma(vector<double> scale) {
 }
 
 Tuning generateMosScale(double gen1Size, double gen2Size, int noteNumber){
-	double base = 0;
-	double interval = fmod(gen2Size, gen1Size);
 	std::vector<double> output(noteNumber);
-	for (int i = 0; i< noteNumber; i++){
-		output.push_back(fmod(base + (i*interval), gen1Size));
+	double next = 0;
+	for (int i = 1; i< noteNumber; i++){
+		next += gen2Size;
+		while(next>gen1Size) next-=gen1Size;
+		output[i-1] = next;
 	}
+	output[noteNumber-1] = gen1Size;
+
 	std::sort (output.begin(), output.end());
 
 	return (Tuning) {

@@ -9,12 +9,12 @@ struct PlayingNote {
 	double phase;
 	double time;
 	int id;
-}
+};
 
 struct NoteEvent {
 	bool on;
 	int id;
-}
+};
 
 struct PlaybackStructure {
 	bool playingBack;
@@ -23,6 +23,6 @@ struct PlaybackStructure {
 	double beatTime;
 	std::vector<NoteEvent> events;
 	int eventPtr;
-}
+};
 
 #endif
