@@ -2,12 +2,15 @@
 #define PLAYBACK_STRUCTURE_H
 
 #include <vector>
+#define PLAYBACK_STRUCTURE_NOTE_NUMBER 16
+
+
 
 struct PlayingNote {
 	bool on;
 	double freq;
 	double phase;
-	double time;
+	int passedFrames;
 	int id;
 };
 
@@ -18,11 +21,14 @@ struct NoteEvent {
 
 struct PlaybackStructure {
 	bool playingBack;
-	PlayingNote note[16];
+	PlayingNote note[PLAYBACK_STRUCTURE_NOTE_NUMBER];
 	int lastOnNote;
 	double beatTime;
-	std::vector<NoteEvent> events;
+	std::vector<NoteEvent> *events;
 	int eventPtr;
+	int passedFrames;
 };
+
+void playAudio(PlaybackStructure &data, float* stream, int len);
 
 #endif
