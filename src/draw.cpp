@@ -151,6 +151,8 @@ void draw(PianoRollPosition const &position,
 			printf("Error in draw when rendering onScreenNotes\n");
 	}
 
+	//vector<ScalePitch> pitches = pitchesInWindow(tuning, 
+
 
 	SDL_RenderPresent(renderer);
 	return;

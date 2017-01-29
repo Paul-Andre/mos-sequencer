@@ -68,7 +68,7 @@ int main(int argc, char **argv) {
 	int beat = 44100;
 
 	vector<NoteEvent> events = makeEventStream(notes, beat, tuning);
-	userdata.events = &events;
+	userdata.events = events;
 	userdata.state = On;
 
 	SDL_zero(want);
@@ -117,7 +117,22 @@ int main(int argc, char **argv) {
 
 
 
-				if( currentKeyStates[ SDL_SCANCODE_UP ] )
+				if (e.key.keysym.scancode == SDL_SCANCODE_RETURN) {
+
+					int beat = 44100;
+					vector<NoteEvent> events = makeEventStream(notes, beat, tuning);
+					userdata.state = On;
+
+					SDL_LockAudioDevice(dev);
+					resetPlaybackStructure(userdata);
+					userdata.events = events;
+
+					SDL_UnlockAudioDevice(dev);
+				}
+
+
+
+				else if( currentKeyStates[ SDL_SCANCODE_UP ] )
                 {
                 	position.y -= 0.1;
                 }
@@ -134,26 +149,15 @@ int main(int argc, char **argv) {
                 	position.x -= 0.1;
                 }
 
+				
+
+			
+				
+
                 
 
 
 			}
-			SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
-
-
-			int screenWidth;
-			int screenHeight;
-
-			SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
-
-
-			double zoom_factor = 1.0000050;
-			double dX = window_size_x * (1 - 1 / zoom_factor);
-			double dY = window_size_y * (1 - 1 / zoom_factor);
-			double pX = (mouse_position_x / screenWidth) * position.w + position.x;
-			double pY = position.y - (mouse_position_y / screenHeight) * position.h;
-			double d_left = pX * dX;
-			double d_up = pY * dY;
 
 
 			if(e.type == SDL_MOUSEWHEEL) {
@@ -198,6 +202,44 @@ int main(int argc, char **argv) {
 				position.x = pX - d_left;
 				position.h *= dY;
 				position.y = pY + d_up;
+			}
+
+			if(e.type == SDL_MOUSEBUTTONDOWN) {
+				SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
+				ScalePitch closest_pitch;
+				int screenWidth;
+				int screenHeight;
+
+				SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
+
+				if(e.button == SDL_BUTTON_LEFT) {
+					double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
+
+					vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
+					double rawPitch, diff = (double)screenHeight;
+					ScalePitch best;
+
+					for(int i=0; i<pitches.size(); i++){
+						//					printf("Pitch: %d, %d\n", pitches[i].scaleDegree, pitches[i].accidentals);
+						rawPitch = getPitch(pitches[i], tuning);
+						//					printf("Raw pitch: %f\n", rawPitch);
+
+						if(fabs(mouse_pitch - rawPitch) < diff) {
+							best = pitches[i];
+							diff = fabs(mouse_pitch - rawPitch);
+						}
+					}
+
+					printf("mouse is at %f\n", mouse_pitch);
+					//	printf("Closest is %f\n", best);
+					double start = position.x + (mouse_position_x / (double)screenWidth) * position.w;
+
+					notes.push_back({start,0.5, best });
+				}
+				if(e.button == SDL_BUTTON_RIGHT) {
+
+				}
+
 			}
 
 
