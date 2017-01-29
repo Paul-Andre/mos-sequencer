@@ -6,6 +6,8 @@
 #include <vector>
 #include <math.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
+
 
 void draw(PianoRollPosition const &position,
 		Tuning const &tuning,
@@ -34,6 +36,7 @@ void draw(PianoRollPosition const &position,
 	vector<SDL_Rect> scaleLines;
 	vector<SDL_Rect> circles;
 
+
 	
 
 
@@ -60,16 +63,34 @@ void draw(PianoRollPosition const &position,
 	vector<SDL_Rect> onScreenNotes;
 	for (int i=0; i<notes.size(); i++) {
 		Note const &note = notes[i];
+
 		double pitch = getPitch(note.scalePitch, tuning);
 		SDL_Rect r;
-		SDL_Rect circle;
 		double x = (note.start - position.x)*(double)screenWidth/position.w;
 		double w = (note.duration)*(double)screenWidth/position.w;
 		double y = (position.y-pitch)*(double)screenHeight/position.h;
 		double h = 0.01*screenHeight/position.h;
 		r.x = x; r.y = y; r.w = w; r.h = h;
 		onScreenNotes.push_back(r);
-		d
+
+	}
+
+	for (int i = 0; i<notes.size(); i++){
+		Note const &note = notes[i];
+		double pitch = getPitch(note.scalePitch, tuning);
+		SDL_Rect r;
+		double x = (note.start - position.x)*(double)screenWidth/position.w;
+		double y = (position.y-pitch)*(double)screenHeight/position.h;
+		double r = 0.05*screenHeight/position.h;
+		circles.push_back(r);
+
+
+
+	}
+	if (circles.size()>0) {
+		SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+		if(SDL_RenderFillRects(renderer, &circles[0], circles.size()) != 0)
+			printf("Error in draw when rendering pointers\n");		
 	}
 
 
