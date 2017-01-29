@@ -4,6 +4,8 @@
 #include "ScalePitch.h"
 using namespace std;
 
+struct ScalePitch;
+
 // both generators are in octaves.
 // gen1 is supposed to be the interval of equivalence.
 struct Tuning {

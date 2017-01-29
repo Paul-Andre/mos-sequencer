@@ -1,5 +1,6 @@
 #include <algorithm>    
 #include <vector>      
+#include "ScalePitch.h"
 #include "Tuning.h"
 #include <math.h>
 #include <stdio.h>
@@ -44,7 +45,7 @@ vector<ScalePitch> pitchesInWindow(Tuning const &tuning, double y, double h){
 
 	for(int i=lowerOctave; i<higherOctave; i++) {
 		for(int j=0; j<tuning.scale.size()-1; j++) {
-			pitches.pushBack = {i*tuning.scale.size()+j, 0};
+			pitches.push_back ( {i*tuning.scale.size()+j, 0});
 		}
 	}
 	return pitches;
