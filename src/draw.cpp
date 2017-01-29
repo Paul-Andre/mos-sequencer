@@ -15,17 +15,17 @@ void draw(PianoRollPosition const &position,
 	int screenHeight;
 	
 	SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
-	//SDL_SetRendererDrawColor(renderer, 30, 30, 30, 255);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
 	SDL_RenderClear(renderer);
+	SDL_RenderPresent(renderer);
 	
 
     double offset = (position.h - (int) position.h)*screenHeight; 
 	int sc_size = tuning.scale.size();
 	const int octaveLinesNum = 2 + (int) position.h;
 	const int scaleLinesNum = octaveLinesNum*sc_size; //Might want to change this
-	double octaveSize = screenHeight/octaveLinesNum;        //Careful!
+	double octaveSize = screenHeight/position.h;        //Careful!
 
-	
 	SDL_Rect scaleLines[scaleLinesNum];
 	SDL_Rect octaveLines[octaveLinesNum];
 
@@ -34,7 +34,7 @@ void draw(PianoRollPosition const &position,
 		octaveLines[i].x = 0;
 		octaveLines[i].y = screenHeight - (int)(octaveHeight);
 		octaveLines[i].w = screenWidth;
-		octaveLines[i].h = 1;
+		octaveLines[i].h = 2;
 
 		for(int j=0; j<sc_size; j++) {
 			double height = octaveHeight + tuning.scale[j]*octaveSize;

@@ -103,6 +103,7 @@ int main(int argc, char **argv) {
 	printf("quitting\n");
 	SDL_CloseAudioDevice(dev);
 
+
 }
 
 void audio_callback(void *data_, Uint8 *stream, int len){
