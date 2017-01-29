@@ -18,31 +18,30 @@ void draw(PianoRollPosition const &position,
 	//SDL_SetRendererDrawColor(renderer, 30, 30, 30, 255);
 	SDL_RenderClear(renderer);
 	
-	printf("Debug before\n");
 
-	int octaveLinesNum = (int) position.h;
-	int scaleLinesNum = octaveLinesNum*tuning.scale.size(); //Might want to change this
+    double offset = (position.h - (int) position.h)*screenHeight; 
+	int sc_size = tuning.scale.size();
+	const int octaveLinesNum = 2 + (int) position.h;
+	const int scaleLinesNum = octaveLinesNum*sc_size; //Might want to change this
 	double octaveSize = screenHeight/octaveLinesNum;        //Careful!
 
+	
 	SDL_Rect scaleLines[scaleLinesNum];
 	SDL_Rect octaveLines[octaveLinesNum];
 
-	for(int i=0; i<octaveLinesNum; i++) {
-		printf("Debug octaves: %d\n", octaveLinesNum);
-		printf("Debug i: %d\n", i);
-		double octaveHeight = i*octaveSize - octaveSize;
+	for(int i=0; i<(int) position.h; i++) {
+		double octaveHeight = i*octaveSize + offset;
 		octaveLines[i].x = 0;
 		octaveLines[i].y = screenHeight - (int)(octaveHeight);
 		octaveLines[i].w = screenWidth;
 		octaveLines[i].h = 1;
 
-		for(int j=0; j<tuning.scale.size()/2; j++) {
-			printf("Debug j: %d\n", j);
+		for(int j=0; j<sc_size; j++) {
 			double height = octaveHeight + tuning.scale[j]*octaveSize;
-			scaleLines[i*scaleLinesNum+j].x = 0;
-			scaleLines[i*scaleLinesNum+j].y = screenHeight - (int)(height);
-			scaleLines[i*scaleLinesNum+j].w = screenWidth;
-			scaleLines[i*scaleLinesNum+j].h = 1;
+			scaleLines[i*sc_size+j].x = 0;
+			scaleLines[i*sc_size+j].y = screenHeight - (int)(height);
+			scaleLines[i*sc_size+j].w = screenWidth;
+			scaleLines[i*sc_size+j].h = 1;
 		}
 	}
 
@@ -52,6 +51,7 @@ void draw(PianoRollPosition const &position,
 	SDL_RenderFillRects(renderer, octaveLines, octaveLinesNum);
 
 	SDL_RenderPresent(renderer);
+	return;
 }
 
 
