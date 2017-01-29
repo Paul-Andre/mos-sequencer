@@ -69,7 +69,6 @@ void draw(PianoRollPosition const &position,
 		double h = 0.01*screenHeight/position.h;
 		r.x = x; r.y = y; r.w = w; r.h = h;
 		onScreenNotes.push_back(r);
-		d
 	}
 
 
