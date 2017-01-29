@@ -83,9 +83,6 @@ void draw(PianoRollPosition const &position,
 		double y = (position.y-pitch)*(double)screenHeight/position.h;
 		double r = 0.05*screenHeight/position.h;
 		circles.push_back(r);
-
-
-
 	}
 	if (circles.size()>0) {
 		SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
