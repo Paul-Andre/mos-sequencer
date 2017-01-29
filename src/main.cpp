@@ -40,7 +40,7 @@ int closestPitch(vector<ScalePitch> const &pitches,Tuning const &tuning,  double
 int closestNote(vector<Note> const &notes, Tuning const &tuning, double x, double y) {
 	for(int i=0; i<notes.size(); i++){
 		if((x - notes[i].start) < notes[i].duration && (x - notes[i].start) > 0) {
-			if(fabs(getPitch(notes[i].scalePitch, tuning) - y) <0.01){
+			if(fabs(getPitch(notes[i].scalePitch, tuning) - y) <0.03){
 				return i;
 			}
 		}
@@ -52,10 +52,10 @@ int closestNote(vector<Note> const &notes, Tuning const &tuning, double x, doubl
 int closestAnchor(vector<Note> const &notes, Tuning const &tuning, double x, double y) {
 	printf("size: %d\n", notes.size());
 	for(int i=0; i<notes.size(); i++){
-		if(fabs(notes[i].start - x) <0.03){
+		if(fabs(notes[i].start - x) <0.08){
 			ScalePitch anchor = notes[i].scalePitch;
 			anchor.accidentals = 0;
-			if(fabs(getPitch(anchor, tuning) - y) <0.03){
+			if(fabs(getPitch(anchor, tuning) - y) <0.1){
 				return i;
 			}
 		}
@@ -78,7 +78,6 @@ int main(int argc, char **argv) {
 	notes.push_back({4.5,0.5, (ScalePitch) {3,1}});
 
 	SDL_AudioSpec want, have;
-	notes.push_back({0,0.5, (ScalePitch) {0,0}});
 
 	SDL_AudioDeviceID dev;
 	bool quit = false;

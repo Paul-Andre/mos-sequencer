@@ -25,11 +25,11 @@ void draw(PianoRollPosition const &position,
 	double beatEnd = ceil(position.x+position.w*2);
 
 	vector<SDL_Rect> beatZones;
-	for(int i = beatStart; i<beatEnd; i+=2){
+	for(int i = beatStart; i<beatEnd; i+=1){
 			SDL_Rect r;
 
 			double x = (i*0.5- position.x)*(double)screenWidth/position.w ;
-			double w = (0.5)*(double)screenWidth/position.w;
+			double w = (0.5)*(double)screenWidth/position.w*0.5;
 			double y = 0;
 			double h = screenHeight;
 			r.x =x; r.y=0; r.w = w; r.h =h; 
@@ -76,7 +76,8 @@ void draw(PianoRollPosition const &position,
 		double x = (note.start - position.x)*(double)screenWidth/position.w;
 		double w = (note.duration)*(double)screenWidth/position.w;
 		double y = (position.y-pitch)*(double)screenHeight/position.h;
-		double h = 0.01*screenHeight/position.h;
+		double h = 0.02*screenHeight/position.h;
+		y-=h*0.5;
 		r.x = x; r.y = y-1.9; r.w = w; r.h = h;
 		onScreenNotes.push_back(r);
 		ScalePitch noAccidentals = note.scalePitch;
