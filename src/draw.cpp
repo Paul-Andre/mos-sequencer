@@ -32,10 +32,14 @@ void draw(PianoRollPosition const &position,
 
 	vector<SDL_Rect> octaveLines;
 	vector<SDL_Rect> scaleLines;
+	vector<SDL_Rect> circles;
+
+	
+
+
 
 	for(int i=lowerOctave; i<higherOctave; i++) {
 		double octavePitch = i*tuning.gen1Size;
-		printf("%f\n", octavePitch);
 		SDL_Rect r;
 		r.x = 0;
 		r.y = (position.y - octavePitch)*screenHeight/position.h;
@@ -58,12 +62,14 @@ void draw(PianoRollPosition const &position,
 		Note const &note = notes[i];
 		double pitch = getPitch(note.scalePitch, tuning);
 		SDL_Rect r;
+		SDL_Rect circle;
 		double x = (note.start - position.x)*(double)screenWidth/position.w;
 		double w = (note.duration)*(double)screenWidth/position.w;
 		double y = (position.y-pitch)*(double)screenHeight/position.h;
 		double h = 0.01*screenHeight/position.h;
 		r.x = x; r.y = y; r.w = w; r.h = h;
 		onScreenNotes.push_back(r);
+		d
 	}
 
 

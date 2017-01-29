@@ -92,6 +92,19 @@ int main(int argc, char **argv) {
 	// Unpausing audio
 	SDL_PauseAudioDevice(dev, 0);
 
+
+	//relative mouse positions
+	int window_size_x ;
+	int window_size_y ;
+	SDL_GetRendererOutputSize(renderer, &window_size_x, &window_size_y);
+	int mouse_position_x;
+	int mouse_position_y;
+	SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
+
+
+
+
+
 	// Event loop
 	while(!quit) {
 		if(SDL_WaitEventTimeout(&e, 50)){
@@ -125,25 +138,34 @@ int main(int argc, char **argv) {
 
 
 			}
+			SDL_GetMouseState(&mouse_position_x,&mouse_position_y);	
 
-			/*double mouse_zoom_rectangle_size_x = ;
-			double mouse_zoom_rectangle_size_y = ;
-			double zoomfactor = 0.5;
-			SDL_GetRendererOutputSize(renderer, mouse_zoom_rectangle_size_x, mouse_zoom_rectangle_size_y);
-			double dX = mouse_zoom_rectangle_size_x* (1 - 1 / zoomfactor);
-			double dY = ouse_zoom_rectangle_size_y* (1 - 1 / zoomfactor);
-			double relative_position_x = mouse_zoom_rectangle_size_x/2 ; 
-			double relative_position_y = -mouse_zoom_rectangle_size_y/2;
-			double mouse_position_x;
-			double mouse_position_y;
+
+
+			double zoom_factor = 1.0000001;
+			double dX = window_size_x * (1 - 1 / zoom_factor);
+			double dY = window_size_y *(1 - 1/zoom_factor);
+			double pX = (mouse_position_x - position.x) / position.w;
+			double pY = (mouse_position_y - position.y) / position.h;
+			double d_left = pX * dX;
+			double d_up = pY * dY;
+
 
 			if(e.type == SDL_MOUSEWHEEL && currentKeyStates[SDL_SCANCODE_LCTRL]) {
-				position.w += (0.5*e.wheel.y);
+				printf("%d\n x1x1x1x1x1", dX );
+				printf("%d\n x2x2x2x2x2", d_left );
+				position.w += dX*e.wheel.y;
+				position.x += d_left*e.wheel.y;
 			}
 			else if (e.type == SDL_MOUSEWHEEL && !currentKeyStates[SDL_SCANCODE_LCTRL]){
-				position.h += (0.5*e.wheel.y);
+				printf("%d\n y1y1y1y1y1", dY );
+				printf("%d\n y2y2y2y2y2", d_up );
+				position.h += d_up*e.wheel.y;
+				position.y += dY*e.wheel.y;
 
-			}*/
+			
+			}
+
 
 
 		}
