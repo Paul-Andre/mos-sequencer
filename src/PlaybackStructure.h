@@ -4,8 +4,6 @@
 #include <vector>
 #define PLAYBACK_STRUCTURE_NOTE_NUMBER 16
 
-
-
 struct PlayingNote {
 	bool on;
 	double freq;
@@ -21,7 +19,7 @@ struct NoteEvent {
 
 struct PlaybackStructure {
 	bool playingBack;
-	PlayingNote note[PLAYBACK_STRUCTURE_NOTE_NUMBER];
+	PlayingNote notes[PLAYBACK_STRUCTURE_NOTE_NUMBER];
 	int lastOnNote;
 	double beatTime;
 	std::vector<NoteEvent> *events;
