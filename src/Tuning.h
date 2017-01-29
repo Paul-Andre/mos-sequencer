@@ -1,6 +1,7 @@
 #ifndef TUNING_H
 #define TUNING_H
 #include <vector>
+#include "ScalePitch.h"
 using namespace std;
 
 // both generators are in octaves.
@@ -13,5 +14,6 @@ struct Tuning {
 };
 
 Tuning generateMosScale(double gen1Size, double gen2Size, int noteNumber);
+vector<ScalePitch> pitchesInWindow(Tuning const &tuning, double y, double h);
 
 #endif

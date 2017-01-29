@@ -35,3 +35,18 @@ Tuning generateMosScale(double gen1Size, double gen2Size, int noteNumber){
 	};
 }
 
+vector<ScalePitch> pitchesInWindow(Tuning const &tuning, double y, double h){
+
+	const int lowerOctave = floor((y-h)/tuning.gen1Size);
+	const int higherOctave = ceil((y)/tuning.gen1Size);
+
+	vector<ScalePitch> pitches;
+
+	for(int i=lowerOctave; i<higherOctave; i++) {
+		for(int j=0; j<tuning.scale.size()-1; j++) {
+			pitches.pushBack = {i*tuning.scale.size()+j, 0};
+		}
+	}
+	return pitches;
+}
+
