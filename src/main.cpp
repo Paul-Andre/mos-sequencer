@@ -67,10 +67,24 @@ int closestPitch(vector<ScalePitch> const &pitches,Tuning const &tuning,  double
 }
 
 int closestNote(vector<Note> const &notes, Tuning const &tuning, double x, double y) {
-	printf("size: %d\n", notes.size());
 	for(int i=0; i<notes.size(); i++){
 		if((x - notes[i].start) < notes[i].duration && (x - notes[i].start) > 0) {
-			if(fabs(getPitch(notes[i].scalePitch, tuning) - y) <0.01){
+			if(fabs(getPitch(notes[i].scalePitch, tuning) - y) <0.03){
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
+
+int closestAnchor(vector<Note> const &notes, Tuning const &tuning, double x, double y) {
+	printf("size: %d\n", notes.size());
+	for(int i=0; i<notes.size(); i++){
+		if(fabs(notes[i].start - x) <0.08){
+			ScalePitch anchor = notes[i].scalePitch;
+			anchor.accidentals = 0;
+			if(fabs(getPitch(anchor, tuning) - y) <0.1){
 				return i;
 			}
 		}
@@ -93,7 +107,6 @@ int main(int argc, char **argv) {
 	notes.push_back({4.5,0.5, (ScalePitch) {3,1}});
 
 	SDL_AudioSpec want, have;
-	notes.push_back({0,0.5, (ScalePitch) {0,0}});
 
 	SDL_AudioDeviceID dev;
 	bool quit = false;
@@ -267,17 +280,24 @@ int main(int argc, char **argv) {
 
 
 				if(e.button.button == SDL_BUTTON_LEFT) {
-					int c = closestNote(notes, tuning, mouseTime, mouse_pitch);
+					int c = closestAnchor(notes, tuning, mouseTime, mouse_pitch);
 					if (c!=-1) {
 						selectedNote = c;
+						draggingTop = false;
 					}
 					else {
+						int c = closestNote(notes, tuning, mouseTime, mouse_pitch);
+						if (c!=-1) {
+							selectedNote = c;
+							draggingTop = true;
+						}
+						else {
+							vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
 
-						vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
-
-						int closest = closestPitch(pitches, tuning, mouse_pitch);
-						if (closest!=-1) {
-							notes.push_back({mouseTime, 0.5, pitches[closest] });
+							int closest = closestPitch(pitches, tuning, mouse_pitch);
+							if (closest!=-1) {
+								notes.push_back({mouseTime, 0.5, pitches[closest] });
+							}
 						}
 					}
 				}
@@ -295,8 +315,11 @@ int main(int argc, char **argv) {
 
 				//	printf("c: %d\n", c);
 				//	printf("closest is {%f, %f, {%d, %d}}\n", notes[c].start, notes[c].duration, notes[c].scalePitch.scaleDegree, notes[c].scalePitch.accidentals);
-					notes[c] = notes[notes.size()-1];
-					notes.pop_back();
+				
+					if (c!=-1) {
+						notes[c] = notes[notes.size()-1];
+						notes.pop_back();
+					}
 				}
 
 			}
@@ -309,6 +332,7 @@ int main(int argc, char **argv) {
 					SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
 					double mouseTime = position.x + (mouse_position_x / (double)screenWidth) * position.w;
 					double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
+
 					if (!draggingTop) {
 						vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
 
@@ -316,7 +340,28 @@ int main(int argc, char **argv) {
 						if (closest!=-1) {
 							notes[selectedNote].scalePitch.scaleDegree = pitches[closest].scaleDegree;
 						}
+						notes[selectedNote].start = round((mouseTime/0.25))*0.25;
+
+
 					}
+					else {
+
+						ScalePitch anchor = notes[selectedNote].scalePitch;
+						anchor.accidentals = 0;
+						double anchorPitch = getPitch(anchor, tuning);
+						int acc = (int) ((mouse_pitch-anchorPitch)/tuning.chroma);
+						notes[selectedNote].scalePitch.accidentals = acc;
+
+						double dut = round((mouseTime-notes[selectedNote].start)/0.25)*0.25;
+						if (dut<=0.25) {
+							dut = 0.25;
+						}
+						notes[selectedNote].duration = dut;
+
+
+					}
+
+
 				}
 			}
 			else if(e.type == SDL_MOUSEBUTTONUP) {
