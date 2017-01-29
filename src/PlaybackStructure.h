@@ -35,7 +35,7 @@ struct PlaybackStructure {
 	PlayingNote notes[PLAYBACK_STRUCTURE_NOTE_NUMBER];
 	int lastOnNote;
 	double beatTime;
-	std::vector<NoteEvent> *events;
+	std::vector<NoteEvent> events;
 	int eventPtr;
 	int passedFrames;
 	int onNotes;
