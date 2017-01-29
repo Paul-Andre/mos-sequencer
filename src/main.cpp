@@ -44,7 +44,7 @@ int main(int argc, char **argv) {
 
 	// Display default window
 	position.x = 0;
-	position.y = 0;
+	position.y = 1;
 	position.w = 4;
 	position.h = 2; // Default octave number
 
@@ -95,7 +95,7 @@ int main(int argc, char **argv) {
 				// do something
 			}
 		}
-		//draw(postion, tuning, notes, renderer);
+		draw(position, tuning, notes, renderer);
 	}
 
 	
