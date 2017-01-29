@@ -17,10 +17,39 @@ using namespace std;
 
 void audio_callback(void *userdata, Uint8 *stream, int len);
 int closestNote(vector<Note> const &notes, Tuning const &tuning, double x, double y);
+int readFromFile(char *filename, vector<Note> const &notes, Tuning const &tuning);
+int writeToFile(char *filename, vector<Note> const &notes, Tuning const &tuning);
 
 static Uint8 *audio_pos;
 static Uint32 audio_len;
 double phase;
+
+int readFromFile(char *filename, vector<Note> const &notes, Tuning const &tuning) {
+	int fd = fopen(filename, "r");
+	char *buffer;
+	if(fd == -1)
+		return -1;
+	while((buffer = getline(fd, 100) != NULL) {
+		if(strcomp(buffer))
+			return 0;
+	}
+
+}
+
+int writeToFile(char *filename, vector<Note> const &notes, Tuning const &tuning) {
+	int fd = fopen(filename, "w");
+	if(fd == -1)
+		return -1;
+	fprintf(fd, "Tuning\n%d\n%d\n", tuning.scaleDegree, tuning.accidentals);
+	fprintf(fd, "Notes\n");
+	for(int i=0; i<notes.size(); i++) {
+		fprintf(fd, "%f,%f,%d,%d\n", notes[i].start, notes[i].duration, notes[i].scalePitch.scaleDegree, notes[i].scalePitch.accidentals);
+	}
+	fclose(fd);
+
+	return 0;
+}
+
 
 int closestPitch(vector<ScalePitch> const &pitches,Tuning const &tuning,  double mouse_pitch) {
 	double best = -1;
@@ -302,6 +331,7 @@ int main(int argc, char **argv) {
 
 
 	printf("quitting\n");
+	writeToFile("out.txt", notes, tuning);
 	SDL_CloseAudioDevice(dev);
 
 }
