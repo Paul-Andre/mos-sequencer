@@ -16,10 +16,25 @@ using namespace std;
 
 
 void audio_callback(void *userdata, Uint8 *stream, int len);
+int closestNote(vector<Note> const &notes, Tuning const &tuning, double x, double y);
 
 static Uint8 *audio_pos;
 static Uint32 audio_len;
 double phase;
+
+int closestNote(vector<Note> const &notes, Tuning const &tuning, double x, double y) {
+	printf("size: %d\n", notes.size());
+	for(int i=0; i<notes.size(); i++){
+		if((x - notes[i].start) < notes[i].duration && (x - notes[i].start) > 0) {
+			if(fabs(getPitch(notes[i].scalePitch, tuning) - y) <0.01){
+				return i;
+			}
+		}
+	}
+
+	return -1;
+}
+
 
 int main(int argc, char **argv) {
 	int k=0;
@@ -29,9 +44,9 @@ int main(int argc, char **argv) {
 	notes.push_back({0,0.5, (ScalePitch) {1,-1}});
 	notes.push_back({0.5,0.5, (ScalePitch) {2,-1}});
 	notes.push_back({1,0.5, (ScalePitch) {1,-1}});
-	notes.push_back({1.5,0.5, (ScalePitch) {2,-1}});
-	notes.push_back({1,0.5, (ScalePitch) {3,0}});
-	notes.push_back({1.5,0.5, (ScalePitch) {3,1}});
+	notes.push_back({2.5,0.5, (ScalePitch) {2,-1}});
+	notes.push_back({2,0.5, (ScalePitch) {3,0}});
+	notes.push_back({4.5,0.5, (ScalePitch) {3,1}});
 
 	SDL_AudioSpec want, have;
 	notes.push_back({0,0.5, (ScalePitch) {0,0}});
@@ -212,7 +227,7 @@ int main(int argc, char **argv) {
 
 				SDL_GetRendererOutputSize(renderer, &screenWidth, &screenHeight);
 
-				if(e.button == SDL_BUTTON_LEFT) {
+				if(e.button.button == SDL_BUTTON_LEFT) {
 					double mouse_pitch = position.y - (mouse_position_y / (double)screenHeight) * position.h;
 
 					vector<ScalePitch> pitches = pitchesInWindow(tuning, position.y, position.h);
@@ -236,8 +251,16 @@ int main(int argc, char **argv) {
 
 					notes.push_back({start,0.5, best });
 				}
-				if(e.button == SDL_BUTTON_RIGHT) {
+				if(e.button.button == SDL_BUTTON_RIGHT) {
+					
+					double x = position.x + (mouse_position_x / (double)screenWidth) * position.w;
+					double y = position.y - (mouse_position_y / (double)screenHeight) * position.h;
+					printf("Coordinates: %f, %f\n", x, y);
+					
+					int c = closestNote(notes, tuning, x, y);
 
+					printf("c: %d\n", c);
+					printf("closest is {%f, %f, {%d, %d}}\n", notes[c].start, notes[c].duration, notes[c].scalePitch.scaleDegree, notes[c].scalePitch.accidentals);
 				}
 
 			}
