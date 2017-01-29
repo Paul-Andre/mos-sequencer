@@ -32,9 +32,9 @@ void draw(PianoRollPosition const &position,
 	double beatEnd = ceil(position.x+position.w*4);
 
 	vector<SDL_Rect> beatZones;
-	for(int i = beatStart; i<beatEnd; i+=2){
+	//for(int i = beatStart; i<beatEnd; i+=2){
 
-		beatZones.push_back({
+		//beatZones.push_back({
 
 
 

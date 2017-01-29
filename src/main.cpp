@@ -34,6 +34,8 @@ int main(int argc, char **argv) {
 	notes.push_back({1.5,0.5, (ScalePitch) {3,1}});
 
 	SDL_AudioSpec want, have;
+	notes.push_back({0,0.5, (ScalePitch) {0,0}});
+
 	SDL_AudioDeviceID dev;
 	bool quit = false;
 	SDL_Event e;
@@ -107,15 +109,15 @@ int main(int argc, char **argv) {
 				SDL_RenderDrawRect(renderer, &rect);
 				SDL_RenderPresent(renderer);
 			}
-			
+
             const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
 
 			if(e.type == SDL_MOUSEWHEEL && currentKeyStates[SDL_SCANCODE_LCTRL]) {
-				printf("wheel\n");
-
+				position.w += (0.5*e.wheel.y);
 			}
 			else if (e.type == SDL_MOUSEWHEEL && !currentKeyStates[SDL_SCANCODE_LCTRL]){
-				printf("both\n");
+				position.h += (0.5*e.wheel.y);
+
 			}
 
 		}
@@ -135,5 +137,7 @@ void audio_callback(void *data_, Uint8 *stream, int len){
 	PlaybackStructure *data = (PlaybackStructure*) data_;
 
 	playAudio(*data, out, len/2/sizeof(float));
+
+
 }
 
