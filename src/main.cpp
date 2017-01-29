@@ -61,7 +61,7 @@ int main(int argc, char **argv) {
 	want.samples = 1024;
 	want.userdata = &userdata;
 
-	if( (dev = SDL_OpenAudioDevice(NULL,
+	/*if( (dev = SDL_OpenAudioDevice(NULL,
 				            0,
 							&want,
 							&have,
@@ -69,7 +69,7 @@ int main(int argc, char **argv) {
 
 		fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
 		exit(-1);
-	}
+	}*/
 
 	// Unpausing audio
 	//SDL_PauseAudioDevice(dev, 0);
@@ -91,9 +91,17 @@ int main(int argc, char **argv) {
 				SDL_RenderDrawRect(renderer, &rect);
 				SDL_RenderPresent(renderer);
 			}
-			if(e.type == SDL_MOUSEWHEEL) {
-				// do something
+			
+            const Uint8* currentKeyStates = SDL_GetKeyboardState( NULL );
+
+			if(e.type == SDL_MOUSEWHEEL && currentKeyStates[SDL_SCANCODE_LCTRL]) {
+				printf("wheel\n");
+
 			}
+			else if (e.type == SDL_MOUSEWHEEL && !currentKeyStates[SDL_SCANCODE_LCTRL]){
+				printf("both\n");
+			}
+
 		}
 		draw(position, tuning, notes, renderer);
 	}
