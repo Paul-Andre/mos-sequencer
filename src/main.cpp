@@ -17,13 +17,14 @@ using namespace std;
 
 void audio_callback(void *userdata, Uint8 *stream, int len);
 int closestNote(vector<Note> const &notes, Tuning const &tuning, double x, double y);
-int readFromFile(char *filename, vector<Note> const &notes, Tuning const &tuning);
-int writeToFile(char *filename, vector<Note> const &notes, Tuning const &tuning);
+//int readFromFile(char *filename, vector<Note> const &notes, Tuning const &tuning);
+//int writeToFile(char *filename, vector<Note> const &notes, Tuning const &tuning);
 
 static Uint8 *audio_pos;
 static Uint32 audio_len;
 double phase;
 
+/*
 int readFromFile(char *filename, vector<Note> const &notes, Tuning const &tuning) {
 	int fd = fopen(filename, "r");
 	char *buffer;
@@ -49,6 +50,7 @@ int writeToFile(char *filename, vector<Note> const &notes, Tuning const &tuning)
 
 	return 0;
 }
+*/
 
 
 int closestPitch(vector<ScalePitch> const &pitches,Tuning const &tuning,  double mouse_pitch) {
@@ -104,7 +106,7 @@ int main(int argc, char **argv) {
 	notes.push_back({1,0.5, (ScalePitch) {1,-1}});
 	notes.push_back({2.5,0.5, (ScalePitch) {2,-1}});
 	notes.push_back({2,0.5, (ScalePitch) {3,0}});
-	notes.push_back({4.5,0.5, (ScalePitch) {3,1}});
+	//notes.push_back({4.5,0.5, (ScalePitch) {3,1}});
 
 	SDL_AudioSpec want, have;
 
@@ -137,7 +139,7 @@ int main(int argc, char **argv) {
 
 	resetPlaybackStructure(userdata);
 
-	int beat = 44100;
+	int beat = 44100/4;
 
 	vector<NoteEvent> events = makeEventStream(notes, beat, tuning);
 	userdata.events = events;
@@ -193,13 +195,12 @@ int main(int argc, char **argv) {
 
 				if (e.key.keysym.scancode == SDL_SCANCODE_RETURN) {
 
-					int beat = 44100;
 					vector<NoteEvent> events = makeEventStream(notes, beat, tuning);
-					userdata.state = On;
 
 					SDL_LockAudioDevice(dev);
 					resetPlaybackStructure(userdata);
 					userdata.events = events;
+					userdata.state = On;
 
 					SDL_UnlockAudioDevice(dev);
 				}
@@ -376,7 +377,7 @@ int main(int argc, char **argv) {
 
 
 	printf("quitting\n");
-	writeToFile("out.txt", notes, tuning);
+	//writeToFile("out.txt", notes, tuning);
 	SDL_CloseAudioDevice(dev);
 
 }

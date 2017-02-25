@@ -32,8 +32,9 @@ int findNextOffNote(PlayingNote const *notes, int lastOnNote) {
 void playAudio(PlaybackStructure &data, float* stream, int len) {
 	for (int t=0; t<len; t++) {
 		if (data.state == On) {
-			while (data.passedFrames >= (((data.events))[data.eventPtr]).timeStamp ) {
+			while (data.eventPtr < data.events.size() && data.passedFrames >= (((data.events))[data.eventPtr]).timeStamp ) {
 				NoteEvent *event = &((data.events))[data.eventPtr];
+				printf("Got a new event, on: %d, id: %d, timeStamp: %d\n",event->on, event->id, event->timeStamp);
 				if (event->on) {
 					int nextOffNote = findNextOffNote(data.notes,data.lastOnNote);
 					data.lastOnNote = nextOffNote;
@@ -122,6 +123,7 @@ vector<NoteEvent> makeEventStream(vector<Note> const &notes, int beat, Tuning co
 	for(int i =0; i<events.size(); i++){
 		printf("on: %d, id: %d, timestamp: %d\n",events[i].on, events[i].id, events[i].timeStamp);
 	}
+	printf("Created a vector of events of size %d\n", events.size());
 	return events;
 }
 
